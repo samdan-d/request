@@ -22,6 +22,7 @@ public class Hourly extends Helper {
 
     private class DownloadWeather extends AsyncTask<Void, Void, Void> {
         protected Void doInBackground(Void... params) {
+            parseC(URL + "&" + MODE_JSON + "&q=" + cities[0]);
             return null;
         }
 

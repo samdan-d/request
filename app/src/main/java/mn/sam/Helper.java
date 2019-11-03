@@ -156,4 +156,49 @@ public abstract class Helper extends AppCompatActivity implements View.OnClickLi
             e.printStackTrace();
         }
     }
+
+    public void parseC(String weatherURL) {
+        InputStream stream = null;
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(weatherURL).openConnection();
+            conn.setRequestMethod("GET");
+            stream = conn.getInputStream();
+
+            BufferedReader rd = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
+            StringBuilder sb = new StringBuilder();
+            int cp;
+            while ((cp = rd.read()) != -1) {
+                sb.append((char) cp);
+            }
+
+            JSONObject json = (JSONObject) new JSONParser().parse(sb.toString());
+
+            HashMap<String, String> weather;
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            JSONArray list = (JSONArray) json.get("list");
+
+            for (int i = 0; i < 8; i++) {
+                weather = new HashMap<>();
+
+                JSONObject listData = (JSONObject) list.get(i);
+                JSONArray w = (JSONArray) listData.get("weather");
+                JSONObject wObj = (JSONObject) w.get(0);
+                JSONObject main = (JSONObject) listData.get("main");
+
+                Date newDate = format.parse(listData.get("dt_txt").toString());
+                format = new SimpleDateFormat("yyyy-MM-dd HH");
+
+                weather.put(KEY_DATE, format.format(newDate));
+                weather.put(KEY_IMAGE, wObj.get("main").toString());
+                weather.put(KEY_TEMPERATURE, main.get("temp") + "°C");
+
+                weathers.add(weather);
+            }
+
+        } catch (Exception e) {
+            // In your production code handle any errors and catch the individual exceptions
+            e.printStackTrace();
+        }
+    }
 }
