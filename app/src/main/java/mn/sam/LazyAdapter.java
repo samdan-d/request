@@ -16,11 +16,18 @@ public class LazyAdapter extends BaseAdapter {
     private Activity activity;
     private ArrayList<HashMap<String, String>> data;
     private static LayoutInflater inflater = null;
+    private int type;
+    private ImageView imIcon;
+    private TextView tvDate;
+    private TextView tvTemperature;
+    private TextView tvCity;
+    private HashMap<String, String> weather;
 
-    public LazyAdapter(Activity a, ArrayList<HashMap<String, String>> d) {
+    public LazyAdapter(Activity a, ArrayList<HashMap<String, String>> d, int type) {
         activity = a;
         data = d;
 
+        this.type = type;
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -42,23 +49,26 @@ public class LazyAdapter extends BaseAdapter {
         if (convertView == null)
             vi = inflater.inflate(R.layout.list_row, null);
 
-        ImageView imIcon = vi.findViewById(R.id.list_image);
-        TextView tvDate = vi.findViewById(R.id.tvDate);
-        TextView tvTemperatur = vi.findViewById(R.id.tvTemperature);
+        imIcon = vi.findViewById(R.id.list_image);
+        tvDate = vi.findViewById(R.id.tvDate);
+        tvTemperature = vi.findViewById(R.id.tvTemperature);
+        tvCity = vi.findViewById(R.id.tvCity);
 
-        HashMap<String, String> weather = new HashMap<>();
         weather = data.get(position);
 
         tvDate.setText(weather.get(Helper.KEY_DATE));
-        tvTemperatur.setText(weather.get(Helper.KEY_TEMPERATURE));
-        switch (weather.get(Helper.KEY_IMAGE).toLowerCase()) {
-            case "sunny":
-                imIcon.setImageResource(R.drawable.sunny);
-                break;
-            case "partly_cloudy":
-                imIcon.setImageResource(R.drawable.partly_cloudy);
-                break;
+        tvTemperature.setText(weather.get(Helper.KEY_TEMPERATURE));
+        String icon = "";
+        if (weather.get(Helper.KEY_IMAGE) != null) {
+            icon = weather.get(Helper.KEY_IMAGE).toLowerCase();
         }
+        if (icon.contains("sun"))
+            imIcon.setImageResource(R.drawable.sunny);
+        else if (icon.contains("cloud"))
+            imIcon.setImageResource(R.drawable.partly_cloudy);
+
+        tvCity.setText(weather.get(Helper.KEY_CITY));
+
         return vi;
     }
 }
