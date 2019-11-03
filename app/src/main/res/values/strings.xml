@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Lab 7</string>
+    <string name="fave_day">Таван өдөр</string>
+    <string name="fave_city">Таван хот</string>
+    <string name="hourly">Цаг тутуам</string>
+</resources>
